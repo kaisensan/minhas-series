@@ -25,6 +25,7 @@ function App() {
     <Router>
       <div>
         <Header />
+        {/* <pre>{JSON.stringify(data)}</pre> */}
         <Switch>
           <Route path='/' exact component={Home} />
           <Route path='/genres' exact component={Genres} />
@@ -34,7 +35,6 @@ function App() {
           <Route path='/series/new' exact component={NewSerie} />
           <Route path='/series/:id' exact component={InfoSerie} />
         </Switch>
-        {/* <pre>{JSON.stringify(data)}</pre> */}
       </div>
     </Router>
   );

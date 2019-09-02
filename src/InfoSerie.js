@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import { Badge } from 'reactstrap';
+import axios from 'axios';
 
 const InfoSerie = ({ match }) => {
   const [form, setForm] = useState({});
@@ -17,7 +17,7 @@ const InfoSerie = ({ match }) => {
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat'
-  }
+  };
 
   useEffect(() => {
     axios
@@ -39,13 +39,13 @@ const InfoSerie = ({ match }) => {
       ...form,
       [field]: evt.target.value
     });
-  }
+  };
 
   const update = () => {
     axios
       .put('/api/series/' + match.params.id, form)
       .then(res => setSuccess(true));
-  }
+  };
 
   if (success) {
     return <Redirect to='/series' />
@@ -63,9 +63,9 @@ const InfoSerie = ({ match }) => {
               <div className='col-9'>
                 <h1 className='font-weight-light text-white'>{data.name}</h1>
                 <div className='lead text-white'>
-                  { data.status === 'WATCHED' && <Badge className='mr-2' color='success'>Assistido</Badge> }
-                  { data.status === 'PENDING' && <Badge className='mr-2' color='warning'>Para assistir</Badge> }
-                  Gênero: {data.genre}
+                  {data.status === 'WATCHED' && <Badge className='mr-2' color='success'>Assistido</Badge>}
+                  {data.status === 'PENDING' && <Badge className='mr-2' color='warning'>Para assistir</Badge>}
+                  <p className="d-inline">Gênero: {data.genre}</p>
                 </div>
               </div>
             </div>
@@ -92,7 +92,7 @@ const InfoSerie = ({ match }) => {
             <div className='form-group'>
               <label htmlFor='genre'>Gênero</label>
               <select className='form-control' id='genre' onChange={onChange('genre_id')} value={form.genre_id}>
-                { genres.map(genre => <option key={genre.id} value={genre.id}>{genre.name}</option>) }
+                {genres.map(genre => <option key={genre.id} value={genre.id}>{genre.name}</option>)}
               </select>
             </div>
             <div className='form-group'>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 const Genres = () => {
   const [data, setData] = useState([]);
@@ -20,7 +20,6 @@ const Genres = () => {
   const renderRow = record => {
     return (
       <tr key={record.id}>
-        <th scope='row'>{record.id}</th>
         <td>{record.name}</td>
         <td>
           <button className='btn btn-danger mr-2' onClick={() => deleteGenre(record.id)}>Remover</button>
@@ -45,11 +44,11 @@ const Genres = () => {
   return (
     <div className='container'>
       <h1>Gêneros</h1>
+      {/* <pre>{JSON.stringify(data)}</pre> */}
       <Link className='btn btn-primary mb-2' to='/genres/new'>Novo Gênero</Link>
       <table className='table table-dark'>
         <thead>
           <tr>
-            <th scope='col'>ID</th>
             <th scope='col'>Name</th>
             <th scope='col'>Ações</th>
           </tr>
@@ -58,7 +57,6 @@ const Genres = () => {
           {data.map(renderRow)}
         </tbody>
       </table>
-      {/* <pre>{JSON.stringify(data)}</pre> */}
     </div>
   )
 }

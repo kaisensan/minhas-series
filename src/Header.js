@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Navbar,
   NavbarBrand,
@@ -8,25 +9,22 @@ import {
   NavItem,
   NavLink
 } from 'reactstrap';
-import { Link } from 'react-router-dom';
 
 const Header = () => {
   const [open, setOpen] = useState(false);
 
-  const toogle = () => setOpen(!open);
-
   return (
-    <Navbar color='light' light expand='md'>
+    <Navbar color='light' light expand='md' className='mb-2'>
       <div className='container'>
         <NavbarBrand tag={Link} to='/'>Minhas Séries</NavbarBrand>
-        <NavbarToggler onClick={toogle}/>
+        <NavbarToggler onClick={() => setOpen(!open)}/>
         <Collapse isOpen={open} navbar>
           <Nav className='ml-auto' navbar>
             <NavItem>
-              <NavLink tag={Link} to='/series'>Séries</NavLink>
+              <NavLink onClick={() => setOpen(false)} tag={Link} to='/series'>Séries</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink tag={Link} to='/genres'>Gêneros</NavLink>
+              <NavLink onClick={() => setOpen(false)} tag={Link} to='/genres'>Gêneros</NavLink>
             </NavItem>
           </Nav>
         </Collapse>
