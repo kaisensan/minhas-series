@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
+import Header from './Header';
 
-const EditGenre = ({ match }) => {
+const EditGenre = ({ location, match }) => {
   const [name, setName] = useState('');
   const [success, setSuccess] = useState(false);
 
@@ -14,7 +15,9 @@ const EditGenre = ({ match }) => {
 
   const onChange = evt => setName(evt.target.value);
 
-  const update = () => {
+  const update = evt => {
+    evt.preventDefault();
+
     axios.put('/api/genres/' + match.params.id, {
       name,
     })
@@ -22,19 +25,25 @@ const EditGenre = ({ match }) => {
   }
 
   if (success) {
-    return <Redirect to='/genres' />
+    return <Redirect to={{
+      pathname: '/genres',
+      state: { user: location.state.user }
+    }} />
   }
 
   return (
-    <div className='container'>
-      <h1>Editar Gênero</h1>
-      <form>
-        <div className='form-group'>
-          <label htmlFor='name'>Nome</label>
-          <input type='text' className='form-control' id='name' value={name} onChange={onChange} placeholder='Nome do gênero' />
-        </div>
-        <button type='button' className='btn btn-primary' onClick={update}>Atualizar</button>
-      </form>
+    <div>
+      <Header user={location.state.user} />
+      <div className='container'>
+        <h1>Editar Gênero</h1>
+        <form onSubmit={update}>
+          <div className='form-group'>
+            <label htmlFor='name'>Nome</label>
+            <input type='text' className='form-control' id='name' name='name' value={name} onChange={onChange} placeholder='Nome do gênero' required />
+          </div>
+          <button type='submit' className='btn btn-primary'>Atualizar</button>
+        </form>
+      </div>
     </div>
   );
 }

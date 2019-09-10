@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import { Badge } from 'reactstrap';
 import axios from 'axios';
+import Header from './Header';
 
-const InfoSerie = ({ match }) => {
+const InfoSerie = ({ location, match }) => {
+  const [data, setData] = useState({});
   const [form, setForm] = useState({});
   const [success, setSuccess] = useState(false);
   const [mode, setMode] = useState('INFO');
-  const [data, setData] = useState({});
-  const [genres, setGenres] = useState([]);
 
   const masterHeader = {
     height: '50vh',
@@ -21,18 +21,19 @@ const InfoSerie = ({ match }) => {
 
   useEffect(() => {
     axios
-      .get('/api/series/' + match.params.id)
+      .get('/api/serieslists/' + match.params.id, {
+        headers: {
+          listid: location.state.user.list_id
+        }
+      })
       .then(res => {
         setData(res.data);
-        setForm(res.data);
+        setForm({
+          status: res.data.status,
+          comments: res.data.comments
+        });
       });
-  }, [match.params.id]);
-
-  useEffect(() => {
-    axios
-      .get('/api/genres')
-      .then(res => setGenres(res.data.data));
-  }, []);
+  }, [match.params.id, location.state.user.list_id]);
 
   const onChange = field => evt => {
     setForm({
@@ -41,21 +42,43 @@ const InfoSerie = ({ match }) => {
     });
   };
 
-  const update = () => {
+  const update = evt => {
+    evt.preventDefault();
+
     axios
-      .put('/api/series/' + match.params.id, form)
+      .put('/api/serieslists/' + match.params.id, {
+        ...form
+      }, {
+        headers: {
+          listid: location.state.user.list_id
+        }
+      })
+      .then(res => setSuccess(true));
+  };
+
+  const deleteSerie = () => {
+    axios
+      .delete('/api/serieslists/' + match.params.id, {
+        headers: {
+          listid: location.state.user.list_id
+        }
+      })
       .then(res => setSuccess(true));
   };
 
   if (success) {
-    return <Redirect to='/series' />
+    return <Redirect to={{
+      pathname: '/home',
+      state: { user: location.state.user }
+    }}/>
   }
 
   return (
     <div>
+      <Header user={location.state.user} />
       <header style={masterHeader}>
         <div className='h-100' style={{ background: 'rgba(0, 0, 0, 0.7)' }}>
-          <div className='h-100 container'>
+          <div className='container h-100'>
             <div className='row h-100 align-items-center'>
               <div className='col-3'>
                 <img className='img-fluid img-thumbnail' src={data.poster} alt='Poster' />
@@ -73,40 +96,31 @@ const InfoSerie = ({ match }) => {
         </div>
       </header>
       <div className='container'>
-        <button className='btn btn-primary my-2' onClick={() => setMode('EDIT')}>Editar</button>
+        <button className='btn btn-primary my-2' onClick={() => setMode('EDIT')}>Info</button>
+        <button className='btn btn-danger my-2 ml-2' onClick={deleteSerie}>Retirar</button>
       </div>
       {
         mode === 'EDIT' &&
         <div className='container pb-2'>
-          <h1>Editar Série</h1>
+          <h1>Anotações</h1>
           {/* <pre>{JSON.stringify(form)}</pre> */}
-          <form>
-            <div className='form-group'>
-              <label htmlFor='name'>Nome</label>
-              <input type='text' className='form-control' id='name' value={form.name} onChange={onChange('name')} placeholder='Nome da série' />
-            </div>
+          <form onSubmit={update}>
             <div className='form-group'>
               <label htmlFor='comments'>Comentários</label>
-              <input type='text' className='form-control' id='comments' value={form.comments} onChange={onChange('comments')} placeholder='Comentários' />
-            </div>
-            <div className='form-group'>
-              <label htmlFor='genre'>Gênero</label>
-              <select className='form-control' id='genre' onChange={onChange('genre_id')} value={form.genre_id}>
-                {genres.map(genre => <option key={genre.id} value={genre.id}>{genre.name}</option>)}
-              </select>
+              <input type='text' className='form-control' id='comments' name='comments' value={form.comments} onChange={onChange('comments')} placeholder='Comentários' />
             </div>
             <div className='form-group'>
               <div className='form-check'>
-                <input type='radio' className='form-check-input' name='status' id='watched' value='WATCHED' onChange={onChange('status')} checked={form.status === 'WATCHED'} />
+                <input type='radio' className='form-check-input' id='watched' name='status' value='WATCHED' onChange={onChange('status')} checked={form.status === 'WATCHED'} />
                 <label className='form-check-label' htmlFor='watched'>Assitido</label>
               </div>
               <div className='form-check'>
-                <input type='radio' className='form-check-input' name='status' id='pending' value='PENDING' onChange={onChange('status')} checked={form.status === 'PENDING'} />
+                <input type='radio' className='form-check-input' id='pending' name='status' value='PENDING' onChange={onChange('status')} checked={form.status === 'PENDING'} />
                 <label className='form-check-label' htmlFor='pending'>Para assistir</label>
               </div>
             </div>
-            <button className='btn btn-primary mr-2' onClick={() => setMode('INFO')}>Cancelar</button>
-            <button type='button' className='btn btn-primary' onClick={update}>Atualizar</button>
+            <button type='submit' className='btn btn-primary mr-2'>Atualizar</button>
+            <button className='btn btn-primary' onClick={() => setMode('INFO')}>Cancelar</button>
           </form>
         </div>
       }
