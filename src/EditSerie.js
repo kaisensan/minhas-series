@@ -23,7 +23,10 @@ const EditSerie = ({ location, match }) => {
       .get('/api/series/' + match.params.id)
       .then(res => {
         setData(res.data);
-        setForm(res.data);
+        setForm({
+          name: res.data.name,
+          genre_id: res.data.genre_id
+        });
       });
   }, [match.params.id]);
 

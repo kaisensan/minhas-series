@@ -4,19 +4,22 @@ import { Redirect } from 'react-router-dom';
 import Header from './Header';
 
 const NewSerie = ({ location }) => {
-  const [form, setForm] = useState({
-    name: '',
-    comments: '',
-    genre_id: 1,
-    status: 'WATCHED'
-  });
+  const [form, setForm] = useState({ name: '' });
   const [genres, setGenres] = useState([]);
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     axios
       .get('/api/genres')
-      .then(res => setGenres(res.data.data));
+      .then(res => {
+        setGenres(res.data.data);
+        setForm(f => {
+          return {
+            ...f,
+            genre_id: res.data.data[0].id
+          }
+        })
+      });
   }, []);
 
   const onChange = field => evt => {

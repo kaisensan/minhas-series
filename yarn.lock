@@ -6261,7 +6261,7 @@ mimic-fn@^2.0.0:
 
 "minhas-series-server@https://github.com/Kaisen-san/minhas-series-server.git":
   version "1.0.0"
-  resolved "https://github.com/Kaisen-san/minhas-series-server.git#aa8849ab33f3bd944d47ee788d10d8257edb8ea7"
+  resolved "https://github.com/Kaisen-san/minhas-series-server.git#d30c988f483458d6725005da206269bd18aaf7c1"
   dependencies:
     axios "^0.19.0"
     body-parser "^1.19.0"
